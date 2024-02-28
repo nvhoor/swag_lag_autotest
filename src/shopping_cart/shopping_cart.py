@@ -137,4 +137,30 @@ def test_remove_product_from_cart(driver: ChromiumDriver):
     except NoSuchElementException:
         num_selected_products_actual = 0
     num_selected_product = int(num_selected_products_actual)
+    assert num_selected_product > 0, "Have no product on the cart to remove."
 
+    cart_icon = driver.find_element(By.ID, value="shopping_cart_container")
+    cart_icon.click()
+    WebDriverWait(driver, 2.0).until(EC.visibility_of_element_located((By.ID, "cart_contents_container")))
+    sleep(const.TIME_WAIT_AFTER_ACTION)
+    current_url = driver.current_url
+    assert current_url == const.CART_URL, f"Not on cart page: current url={current_url}"
+    print(current_url)
+
+    remove_button = driver.find_element(by=By.XPATH, value='//*[@id="cart_contents_container"]/div/div[1]/div[3]/div[2]/div[2]/button')
+    remove_button.click()
+    num_selected_product -= 1
+    try:
+        products = driver.find_elements(By.CLASS_NAME, value="cart_item")
+        num_selected_product_actual = len(products)
+    except NoSuchElementException:
+        num_selected_product_actual = 0
+    assert num_selected_product == num_selected_product_actual, f"Num products in the cart incorrect."
+
+    continue_shopping_btn = driver.find_element(By.ID, value="continue-shopping")
+    continue_shopping_btn.click()
+    WebDriverWait(driver, 2.0).until(EC.visibility_of_element_located((By.ID, "inventory_container")))
+    sleep(const.TIME_WAIT_AFTER_ACTION)
+    current_url = driver.current_url
+    assert current_url == const.INVENTORY_URL, f"Can't back to inventory page: current url={current_url}"
+    print(current_url)

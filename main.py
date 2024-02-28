@@ -11,11 +11,11 @@ from src.shopping_cart import shopping_cart
 
 class SKIP_TEST(Enum):
     STANDARD_USER = False
-    LOCKED_OUT_USER = True
-    PROBLEM_USER = True
-    PERFORMANCE_GLITCH_USER = True
-    ERROR_USER = True
-    VISUAL_USER = True
+    LOCKED_OUT_USER = False
+    PROBLEM_USER = False
+    PERFORMANCE_GLITCH_USER = False
+    ERROR_USER = False
+    VISUAL_USER = False
 
 
 @pytest.mark.skipif(SKIP_TEST.STANDARD_USER.value, reason="disable")
@@ -27,6 +27,7 @@ def test_standard_user():
     login.test_login(driver, "standard_user", "secret_sauce")
     shopping_cart.test_add_something_to_cart(driver)
     shopping_cart.test_add_something_from_product_detail_page(driver)
+    shopping_cart.test_remove_product_from_cart(driver)
     checkout.test_order_something(driver, "Van Ho", "Nguyen", "550000")
     login.test_logout(driver)
     driver.quit()
@@ -41,6 +42,8 @@ def test_locked_out_user():
     driver.implicitly_wait(const.IMPLICITLY_WAIT)
     login.test_login(driver, "locked_out_user", "secret_sauce")
     shopping_cart.test_add_something_to_cart(driver)
+    shopping_cart.test_add_something_from_product_detail_page(driver)
+    shopping_cart.test_remove_product_from_cart(driver)
     checkout.test_order_something(driver, "Van Ho", "Nguyen", "550000")
     login.test_logout(driver)
     driver.quit()
@@ -55,6 +58,8 @@ def test_problem_user():
     driver.implicitly_wait(const.IMPLICITLY_WAIT)
     login.test_login(driver, "problem_user", "secret_sauce")
     shopping_cart.test_add_something_to_cart(driver)
+    shopping_cart.test_add_something_from_product_detail_page(driver)
+    shopping_cart.test_remove_product_from_cart(driver)
     checkout.test_order_something(driver, "Van Ho", "Nguyen", "550000")
     login.test_logout(driver)
     driver.quit()
@@ -69,6 +74,8 @@ def test_performance_glitch_user():
     driver.implicitly_wait(const.IMPLICITLY_WAIT)
     login.test_login(driver, "performance_glitch_user", "secret_sauce")
     shopping_cart.test_add_something_to_cart(driver)
+    shopping_cart.test_add_something_from_product_detail_page(driver)
+    shopping_cart.test_remove_product_from_cart(driver)
     checkout.test_order_something(driver, "Van Ho", "Nguyen", "550000")
     login.test_logout(driver)
     driver.quit()
@@ -83,6 +90,8 @@ def test_error_user():
     driver.implicitly_wait(const.IMPLICITLY_WAIT)
     login.test_login(driver, "error_user", "secret_sauce")
     shopping_cart.test_add_something_to_cart(driver)
+    shopping_cart.test_add_something_from_product_detail_page(driver)
+    shopping_cart.test_remove_product_from_cart(driver)
     checkout.test_order_something(driver, "Van Ho", "Nguyen", "550000")
     login.test_logout(driver)
     driver.quit()
@@ -97,6 +106,8 @@ def test_visual_user():
     driver.implicitly_wait(const.IMPLICITLY_WAIT)
     login.test_login(driver, "visual_user", "secret_sauce")
     shopping_cart.test_add_something_to_cart(driver)
+    shopping_cart.test_add_something_from_product_detail_page(driver)
+    shopping_cart.test_remove_product_from_cart(driver)
     checkout.test_order_something(driver, "Van Ho", "Nguyen", "550000")
     login.test_logout(driver)
     driver.quit()
