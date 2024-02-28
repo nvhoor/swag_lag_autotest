@@ -1,7 +1,10 @@
 from time import sleep
 
+from selenium.common import NoSuchElementException
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from src import const
 
@@ -12,18 +15,21 @@ def test_order_something(driver: ChromiumDriver, first_name, last_name, postal_c
     current_url = driver.current_url
     assert current_url == const.INVENTORY_URL, f"Not on inventory page: current url={current_url}"
     print(current_url)
+    WebDriverWait(driver, 2.0).until(EC.visibility_of_element_located((By.ID, "inventory_container")))
 
     try:
         shopping_cart_badge = driver.find_element(By.CLASS_NAME, value="shopping_cart_badge")
         num_selected_products_actual = shopping_cart_badge.text
-    except:
+    except NoSuchElementException:
         num_selected_products_actual = 0
     cart_icon = driver.find_element(By.ID, value="shopping_cart_container")
     cart_icon.click()
+    WebDriverWait(driver, 2.0).until(EC.visibility_of_element_located((By.ID, "cart_contents_container")))
     sleep(const.TIME_WAIT_AFTER_ACTION)
     current_url = driver.current_url
     assert current_url == const.CART_URL, f"Not on cart page: current url={current_url}"
     print(current_url)
+
     # TODO: check the cart displays the correct list of selected products(name, image, quantity, price,...) via database or configs
     shopping_cart_badge = driver.find_element(By.CLASS_NAME, value="shopping_cart_badge")
     num_selected_product = shopping_cart_badge.text
@@ -34,10 +40,12 @@ def test_order_something(driver: ChromiumDriver, first_name, last_name, postal_c
     assert is_enabled, f"Checkout button not enabled."
 
     checkout_btn.click()
+    WebDriverWait(driver, 2.0).until(EC.visibility_of_element_located((By.ID, "checkout_info_container")))
     sleep(const.TIME_WAIT_AFTER_ACTION)
     current_url = driver.current_url
     assert current_url == const.CHECKOUT_INFO_URL, f"Not show checkout input information page: current url={current_url}"
     print(current_url)
+
     first_name_field = driver.find_element(By.ID, value="first-name")
     last_name_field = driver.find_element(By.ID, value="last-name")
     postal_code_field = driver.find_element(By.ID, value="postal-code")
@@ -46,14 +54,17 @@ def test_order_something(driver: ChromiumDriver, first_name, last_name, postal_c
     postal_code_field.send_keys(postal_code)
     continue_btn = driver.find_element(By.ID, value="continue")
     continue_btn.click()
+    WebDriverWait(driver, 2.0).until(EC.visibility_of_element_located((By.ID, "checkout_summary_container")))
     sleep(const.TIME_WAIT_AFTER_ACTION)
-    # TODO: check Displays the correct list of selected products(name, image, quantity, price,...). Displays correct shipping info, total price, tax and final price.
+    # TODO: check displays the correct list of selected products(name, image, quantity, price,...). Displays correct shipping info, total price, tax and final price.
     current_url = driver.current_url
     assert current_url == const.CHECKOUT_OVERVIEW_URL, f"Not show checkout overview page: current url={current_url}"
     print(current_url)
 
+
     finish_btn = driver.find_element(By.ID, value="finish")
     finish_btn.click()
+    WebDriverWait(driver, 2.0).until(EC.visibility_of_element_located((By.ID, "checkout_complete_container")))
     sleep(const.TIME_WAIT_AFTER_ACTION)
     checkout_complete_container = driver.find_element(By.ID, value="checkout_complete_container")
     current_url = driver.current_url
@@ -63,6 +74,7 @@ def test_order_something(driver: ChromiumDriver, first_name, last_name, postal_c
 
     back_to_products_btn = driver.find_element(By.ID, value="back-to-products")
     back_to_products_btn.click()
+    WebDriverWait(driver, 2.0).until(EC.visibility_of_element_located((By.ID, "inventory_container")))
     sleep(const.TIME_WAIT_AFTER_ACTION)
     current_url = driver.current_url
     assert current_url == const.INVENTORY_URL, f"Not back to inventory page: current url={current_url}"
