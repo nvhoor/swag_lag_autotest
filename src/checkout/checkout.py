@@ -61,6 +61,32 @@ def test_order_something(driver: ChromiumDriver, first_name, last_name, postal_c
     assert current_url == const.CHECKOUT_OVERVIEW_URL, f"Not show checkout overview page: current url={current_url}"
     print(current_url)
 
+    try:
+        products = driver.find_elements(By.CLASS_NAME, value="cart_item")
+        num_selected_product_actual = len(products)
+    except NoSuchElementException:
+        num_selected_product_actual = 0
+        products = []
+    assert num_selected_product == str(num_selected_product_actual), f"Num products in the overview incorrect: Actual={str(num_selected_product_actual)}, Expected={num_selected_product}"
+
+    total_price = 0
+    for product in products:
+        price_element = product.find_element(By.CLASS_NAME, value="inventory_item_price")
+        price = float(price_element.text.strip().replace('$', ''))
+        print(f"price: {price}")
+        total_price += price
+
+    total_price_element = driver.find_element(By.CLASS_NAME, value="summary_subtotal_label")
+    total_price_actual = total_price_element.text.strip().split(':')[1].strip()
+    tax_element = driver.find_element(By.CLASS_NAME, value="summary_tax_label")
+    final_price_element = driver.find_element(By.XPATH, value="//*[@id='checkout_summary_container']/div/div[2]/div[8]")
+    tax = float(tax_element.text.strip().split(':')[1].replace('$', ''))
+    final_price_actual = final_price_element.text.strip().split(':')[1].strip()
+    final_price = total_price + tax
+    total_price_expected = '$' + str(round(total_price, 2))
+    final_price_expected = '$' + str(round(final_price, 2))
+    assert total_price_actual == total_price_expected, f"Item total price in the overview incorrect: Actual={total_price_actual}, Expected={total_price_expected}"
+    assert final_price_actual == final_price_expected, f"Total price in the overview incorrect: Actual={final_price_actual}, Expected={final_price_expected}"
 
     finish_btn = driver.find_element(By.ID, value="finish")
     finish_btn.click()

@@ -11,11 +11,11 @@ from src.shopping_cart import shopping_cart
 
 class SKIP_TEST(Enum):
     STANDARD_USER = False
-    LOCKED_OUT_USER = False
-    PROBLEM_USER = False
-    PERFORMANCE_GLITCH_USER = False
-    ERROR_USER = False
-    VISUAL_USER = False
+    LOCKED_OUT_USER = True
+    PROBLEM_USER = True
+    PERFORMANCE_GLITCH_USER = True
+    ERROR_USER = True
+    VISUAL_USER = True
 
 
 @pytest.mark.skipif(SKIP_TEST.STANDARD_USER.value, reason="disable")

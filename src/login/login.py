@@ -1,11 +1,10 @@
-import datetime
 from time import sleep
 
-from selenium.common import NoSuchElementException
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from src import const
 
 
@@ -40,4 +39,3 @@ def test_logout(driver: ChromiumDriver):
     current_url = driver.current_url
     assert current_url == const.BASE_URL, f"Can't logout: baseurl={const.BASE_URL}, current url={current_url}"
     print(current_url)
-
